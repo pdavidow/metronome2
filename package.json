@@ -1,0 +1,16 @@
+{
+  "name": "metronome2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mobx": "^2.3.2",
+    "stampit": "^3.0.0-rc.5"
+  }
+}
