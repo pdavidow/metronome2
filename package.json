@@ -12,5 +12,10 @@
   "dependencies": {
     "mobx": "^2.3.2",
     "stampit": "^3.0.0-rc.5"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.9.0",
+    "babelify": "^7.3.0",
+    "tape": "^4.6.0"
   }
 }
