@@ -10,7 +10,7 @@ export const Beat = stampit({
         tickCount() {
             return lcm(this.rh, this.lh);
         },
-        tickIndices (noteCount) {
+        tickIndices(noteCount) {
             const tickCount = this.tickCount();
             const interval = tickCount / noteCount;
             let index = 0;
@@ -22,10 +22,10 @@ export const Beat = stampit({
             }
             return indicies;
         },
-        rhTickIndices () {
+        rhTickIndices() {
             return this.tickIndices(this.rh);
         },
-        lhTickIndices () {
+        lhTickIndices() {
             return this.tickIndices(this.lh);
         }
     }
