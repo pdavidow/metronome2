@@ -9,6 +9,24 @@ export const Beat = stampit({
     methods: {
         tickCount() {
             return lcm(this.rh, this.lh);
+        },
+        tickIndices (noteCount) {
+            const tickCount = this.tickCount();
+            const interval = tickCount / noteCount;
+            let index = 0;
+            let indicies = [];
+
+            while (index < tickCount) {
+                indicies.push(index);
+                index += interval;
+            }
+            return indicies;
+        },
+        rhTickIndices () {
+            return this.tickIndices(this.rh);
+        },
+        lhTickIndices () {
+            return this.tickIndices(this.lh);
         }
     }
 });
