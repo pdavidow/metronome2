@@ -1,14 +1,24 @@
+// babel-node test_metronome.js
+
 /*
-Classic ticks per minute' (CTPM) is the classic metronome setting where 60 gives one 'classic' tick per second. (The time signature for the piece is irrelevant.)</p>
-Example: For CTPM=60 and 'Classic ticks per beat' (CTPB)=1, each beat has 1 classic-tick, each spaced 1 second a part; for 60 and 2, each beat has 2 classic-ticks, each also spaced 1 second a part (the beat is now twice as long).</p>
-Example: For CTPB=3, and a beat with 8 notes for right and 3 for left, 24 ticks are generated, with a classic-tick falling every 8th tick, starting on the 1st.</p>
+ https://gitter.im/learn-javascript-courses/javascript-questions
+
+ Testing audio frameworks is easy if your app is modular. In other words,
+ the part of the app responsible for creating the audio stream is not
+ also responsible for sending that audio stream to the speakers.
+ Most audio frameworks allow you to insert audio processors between
+ the audio producers (oscillators, sample sources, etc..) and
+ audio output. Your tests would take the form of an audio processor,
+ but instead of manipulating the sound and passing it to the output,
+ you make assertions based on the input you receive.
  */
 
 import test from 'tape';
 import {Metronome} from '../model/metronome';
 import {Beat} from '../model/beat';
+import {isEqual, range} from 'lodash';
 
-test('Given a beat and a metronome-setting, calculate tick duration (sec)', (assert) => {
+test('Given a beat and a metronome-setting, calc tick duration (sec)', (assert) => {
     let metronome = Metronome({classicTicksPerMinute: 60, classicTicksPerBeat: 12});
     let beat = Beat({rh: 3, lh: 4});
     let actual = metronome.tickDurationForBeat(beat);
@@ -68,6 +78,46 @@ test('Given a beat and a metronome-setting, calculate tick duration (sec)', (ass
     actual = metronome.tickDurationForBeat(beat);
     expected = 1 / 6;
     assert.equal(actual, expected, '1 tick every 1/6 sec');
+
+    assert.end();
+});
+
+test('Given a beat and a metronome-setting, calc tick start time offset (sec)', (assert) => {
+    let metronome = Metronome({classicTicksPerMinute: 60, classicTicksPerBeat: 12});
+    let beat = Beat({rh: 3, lh: 4});
+    let actual = metronome.tickStartTimeOffsetsForBeat(beat);
+    let expected = range(0,12,1);
+    assert.ok(isEqual(actual, expected), '12 ticks, 1 tick every 1 sec, for 12 sec');
+
+    metronome = Metronome({classicTicksPerMinute: 30, classicTicksPerBeat: 12});
+    beat = Beat({rh: 3, lh: 4});
+    actual = metronome.tickStartTimeOffsetsForBeat(beat);
+    expected = range(0,24,2);
+    assert.ok(isEqual(actual, expected), '12 ticks, 1 tick every 2 sec, for 24 sec');
+
+    metronome = Metronome({classicTicksPerMinute: 120, classicTicksPerBeat: 12});
+    beat = Beat({rh: 3, lh: 4});
+    actual = metronome.tickStartTimeOffsetsForBeat(beat);
+    expected = range(0,6,0.5);
+    assert.ok(isEqual(actual, expected), '12 ticks, 1 tick every 1/2 sec, for 6 sec');
+
+    metronome = Metronome({classicTicksPerMinute: 60, classicTicksPerBeat: 24});
+    beat = Beat({rh: 3, lh: 4});
+    actual = metronome.tickStartTimeOffsetsForBeat(beat);
+    expected = range(0,24,2);
+    assert.ok(isEqual(actual, expected), '12 ticks, 1 tick every 2 sec, for 24 sec');
+
+    metronome = Metronome({classicTicksPerMinute: 60, classicTicksPerBeat: 6});
+    beat = Beat({rh: 3, lh: 4});
+    actual = metronome.tickStartTimeOffsetsForBeat(beat);
+    expected = range(0,6,0.5);
+    assert.ok(isEqual(actual, expected), '12 ticks, 1 tick every 1/2 sec, for 6 sec');
+
+    metronome = Metronome({classicTicksPerMinute: 120, classicTicksPerBeat: 4});
+    beat = Beat({rh: 3, lh: 4});
+    actual = metronome.tickStartTimeOffsetsForBeat(beat);
+    expected = range(0, 2, 1/6);
+    assert.ok(isEqual(actual, expected), '12 ticks, 1 tick every 1/6 sec, for 2 sec');
 
     assert.end();
 });
